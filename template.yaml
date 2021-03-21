@@ -1,0 +1,24 @@
+AWSTemplateFormatVersion: "2010-09-09"
+
+Description: |
+  Dummy template to test IAM policy generation.
+  This template can be converted to straight CloudFormation with:
+  sam validate --debug
+
+Transform: "AWS::Serverless-2016-10-31"
+
+Resources:
+  MyQueue:
+    Type: AWS::SQS::Queue
+    Properties:
+      QueueName: my-first-queue
+
+  DummyFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: sam_iam/
+      Handler: policy.get_policy
+      Runtime: python3.8
+      Policies:
+        - SQSPollerPolicy:
+            QueueName: !GetAtt MyQueue.QueueName
